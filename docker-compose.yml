@@ -3,20 +3,14 @@ version: '3.5'
 services:
   db:
     image: postgres
-    container_name: db
-    env_file:
-      - ./db/.env
-    networks:
-      mystagram_network:
-        aliases: [mystagram.postgres]
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=12345
+    container_name: mystagram_db
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    restart: always
 
   backend:
     build:
@@ -27,12 +21,13 @@ services:
     container_name: backend
     volumes:
       - ./backend/src:/backend/src:ro
-      - ./backend/src:/backend/prisma:ro
+      - ./backend/prisma:/backend/prisma:ro
     networks:
       mystagram_network:
         aliases: [mystagram.backend]
+      target: development
     ports:
-      - '3000:3000'
+      - '4200:4200'
       - '5555:5555'
     command: npm run start
     depends_on:
@@ -51,19 +46,17 @@ services:
       mystagram_network:
         aliases: [mystagram.frontend]
     ports:
-      - '80:80'
+      - '3000:3000'
     command: npm run start
     restart: on-failure
 
   pgadmin:
     image: dpage/pgadmin4
     restart: always
-    container_name: pgadmin
-    env_file:
-      - .env
-    networks:
-      mystagram_network:
-        aliases: [mystagram.pgadmin]
+    container_name: mystagram_pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=123456
     ports:
       - '5050:80'
     depends_on:
