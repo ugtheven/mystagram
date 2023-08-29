@@ -1,13 +1,13 @@
-FROM node:14
+FROM node:18 as development
 
-WORKDIR /app
+WORKDIR /frontend
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm clean-install
 
 COPY . .
 
 RUN npm run build
 
-CMD [ "npx", "serve", "-s", "build", "-l", "80" ]
+EXPOSE 80

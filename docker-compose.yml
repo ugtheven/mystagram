@@ -3,45 +3,72 @@ version: '3.5'
 services:
   db:
     image: postgres
-    restart: always
-    environment:
-      - POSTGRES_PASSWORD=12345
-    container_name: mystagram_db
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
+    container_name: db
+    env_file:
+      - ./db/.env
+    networks:
+      mystagram_network:
+        aliases: [mystagram.postgres]
     ports:
       - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: mystagram_backend
+      target: development
+    image: mystagram/backend
+    container_name: backend
+    volumes:
+      - ./backend/src:/backend/src:ro
+      - ./backend/src:/backend/prisma:ro
+    networks:
+      mystagram_network:
+        aliases: [mystagram.backend]
     ports:
       - '3000:3000'
+      - '5555:5555'
+    command: npm run start
     depends_on:
       - db
-    volumes:
-      - ./backend/src:/backend/src
+    restart: on-failure
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: mystagram_frontend
+    image: mystagram/frontend
+    container_name: frontend
+    volumes:
+      - ./frontend/src:/frontend/src:ro
+    networks:
+      mystagram_network:
+        aliases: [mystagram.frontend]
     ports:
       - '80:80'
-    volumes:
-      - ./backend/src:/backend/src
+    command: npm run start
+    restart: on-failure
 
   pgadmin:
     image: dpage/pgadmin4
     restart: always
-    container_name: mystagram_pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=123456
+    container_name: pgadmin
+    env_file:
+      - .env
+    networks:
+      mystagram_network:
+        aliases: [mystagram.pgadmin]
     ports:
       - '5050:80'
     depends_on:
       - db
+
+networks:
+  mystagram_network:
+    driver: bridge
