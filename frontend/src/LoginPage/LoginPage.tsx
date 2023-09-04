@@ -1,6 +1,5 @@
-import React from "react";
-import mobilePreview from "./mobile-preview.png";
-import logo from "./logo.png";
+import mobilePreview from "../assets/mobile-preview.png";
+import logo from "../assets/logo.png";
 import "./LoginPage.scss";
 
 export function LoginPage() {

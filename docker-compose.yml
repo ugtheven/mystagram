@@ -31,7 +31,7 @@ services:
     ports:
       - '4200:4200'
       - '5555:5555'
-    command: npm run start
+    command: npm run start:dev
     depends_on:
       - db
     restart: on-failure
@@ -48,8 +48,8 @@ services:
       mystagram_network:
         aliases: [mystagram.frontend]
     ports:
-      - '3000:3000'
-    command: npm run start
+      - '5173:5173'
+    command: npm run dev
     restart: on-failure
 
   pgadmin:
