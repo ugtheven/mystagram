@@ -1,6 +1,8 @@
-import mobilePreview from "../assets/mobile-preview.png";
-import logo from "../assets/logo.png";
+import mobilePreview from "../../assets/mobile-preview.png";
+import logo from "../../assets/logo.png";
 import "./LoginPage.scss";
+import { InputField } from "../../components/InputField/InputField";
+import { Button } from "../../components/Button/Button";
 
 export function LoginPage() {
   return (
@@ -22,18 +24,9 @@ export function LoginPage() {
           <img src={logo} alt=""></img>
           {/* <!-- Forms --> */}
           <form className="login-box-forms">
-            {/* <!-- Field --> */}
-            <div className="inputbox">
-              <input type="text" id="username" required></input>
-              <span>Nom d'utilisateur</span>
-            </div>
-            {/* <!-- Field --> */}
-            <div className="inputbox">
-              <input type="password" id="password" required></input>
-              <span>Mot de passe</span>
-            </div>
-            {/* <!-- Button --> */}
-            <input className="button" value="Se connecter"></input>
+            <InputField label="Nom d'utilisateur" type="text"/>
+            <InputField label="Mot de passe" type="password" />
+            <Button label="Se connecter" />
           </form>
           {/* <!-- Link --> */}
           <a className="link" href="/sendResetPass">

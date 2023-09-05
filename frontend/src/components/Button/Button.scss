@@ -1,0 +1,27 @@
+.button {
+  width: 268px;
+  height: 30px;
+
+  background-color: #0074CC;
+  border-radius: 3px;
+  border: 0;
+
+  color: white;
+  font-family: 'Roboto', serif;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.button:hover {
+  background-color: #3187c8;
+  transition: 0.3s;
+}
+
+.button:disabled {
+  background-color: #3981b8b6;
+  transition: 0.3s;
+}
